@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Poke Search</string>
+    <string name="app_load_error">There was an error loading the data</string>
+    <string name="app_load_retry">Try Again</string>
+</resources>

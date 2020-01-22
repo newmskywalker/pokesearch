@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:background="?colorPrimary"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.MainFragment">
+
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/main_recycler_view"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       tools:listitem="@layout/item_pokemon_list"
+       tools:itemCount="25"
+       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+       android:visibility="gone"
+       tools:visibility="visible"
+       android:padding="16dp"
+       android:clipToPadding="false"
+   />
+    <ProgressBar
+        android:id="@+id/main_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:visibility="gone"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_load_error"
+            android:gravity="center"/>
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_load_retry"
+        />
+    </LinearLayout>
+</FrameLayout>
