@@ -5,13 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.mateoj.pokesearch.api.PokeApiService
 import com.mateoj.pokesearch.api.Pokemon
-import com.mateoj.pokesearch.api.PokemonResult
 import com.mateoj.pokesearch.api.PokemonResultList
+import com.mateoj.pokesearch.db.PokemonSearchSuggestionsDB
+import com.mateoj.pokesearch.db.PokemonSuggestion
 import kotlinx.coroutines.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class PokemonListDataSource(
+    private val searchSuggestionsDb: PokemonSearchSuggestionsDB,
     private val apiService: PokeApiService,
     private val retryExecutor : Executor = Executors.newSingleThreadExecutor()
 ) : PageKeyedDataSource<String, Pokemon>() {
@@ -46,20 +48,34 @@ class PokemonListDataSource(
             try {
                 val result = apiService.getPokemonList(limit = params.requestedLoadSize)
                 val list = result.results.map { async { apiService.getPokemonByName(it.name) } }
+                saveToDb(result)
                 callback.onResult(list.awaitAll(), 0, result.count, null, result.next)
                 postLoaded()
                 initialLoad.postValue(NetworkState.LOADED)
             } catch (e: Throwable) {
                 retry = { loadInitial(params, callback) }
                 postError(e.message)
+                e.printStackTrace()
                 initialLoad.postValue(NetworkState.error(e.message))
             }
         }
     }
 
+    private fun saveToDb(result: PokemonResultList) {
+        val list = mutableListOf<PokemonSuggestion>()
+        result.results.forEach { p ->
+            val id = Uri.parse(p.url).lastPathSegment
+            id?.toIntOrNull()?.let {
+                list.add(PokemonSuggestion(id = it, name = p.name))
+            }
+        }
+
+        searchSuggestionsDb.pokemonDao().insertAll(list)
+    }
+
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Pokemon>) {
         postLoading()
-        scope.launch(Dispatchers.IO) {
+        scope.launch {
             try {
                 with(Uri.parse(params.key)) {
                     val offset = getQueryParameter("offset")
@@ -67,12 +83,14 @@ class PokemonListDataSource(
                     val result = apiService.getPokemonList(limit = limit?.toInt(), offset = offset?.toInt())
                     val list = result.results.map { async { apiService.getPokemonByName(it.name) } }
 
+                    saveToDb(result)
                     callback.onResult(list.awaitAll(),  result.next)
                     postLoaded()
                 }
 
             } catch (e: Throwable) {
                 retry = { loadAfter(params, callback) }
+                e.printStackTrace()
                 postError(e.message)
             }
         }

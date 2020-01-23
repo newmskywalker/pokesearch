@@ -18,11 +18,10 @@
             android:id="@+id/item_pokemon_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="@dimen/pokemon_thumb_image"
+            android:layout_height="@dimen/pokemon_thumb_image"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:src="@mipmap/ic_launcher_round"
-        />
+            tools:src="@mipmap/ic_launcher_round" />
         <TextView
             android:id="@+id/item_pokemon_name"
             android:layout_width="wrap_content"
@@ -31,6 +30,20 @@
             app:layout_constraintBottom_toBottomOf="@id/item_pokemon_image"
             app:layout_constraintStart_toEndOf="@id/item_pokemon_image"
             style="@style/TextAppearance.AppCompat.Title"
+            tools:text="Pikachu"
+            android:paddingStart="@dimen/text_padding"
+            android:paddingEnd="@dimen/text_padding"
+        />
+        <TextView
+            android:id="@+id/item_pokemon_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="#9655"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="?colorAccent"
+            android:padding="@dimen/text_padding"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

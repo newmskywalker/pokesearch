@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_padding">8dp</dimen>
+    <dimen name="pokemon_thumb_image">96dp</dimen>
+    <dimen name="detail_image_offset">48dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="card_corner_radius">10dp</dimen>
+</resources>

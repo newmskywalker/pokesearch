@@ -2,4 +2,8 @@
     <string name="app_name">Poke Search</string>
     <string name="app_load_error">There was an error loading the data</string>
     <string name="app_load_retry">Try Again</string>
+    <string name="pokemon_id">#%1$s</string>
+    <string name="pokemon_weight"><b>Weight:</b> %1$.2f kg</string>
+    <string name="pokemon_height"><b>Height:</b> %1$.2f m</string>
+    <string name="detail_stats_title">Stats</string>
 </resources>

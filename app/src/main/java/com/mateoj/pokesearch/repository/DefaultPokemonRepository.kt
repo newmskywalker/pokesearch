@@ -5,6 +5,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.mateoj.pokesearch.api.PokeApiService
 import com.mateoj.pokesearch.api.Pokemon
+import com.mateoj.pokesearch.api.Specie
 import com.mateoj.pokesearch.util.Result
 
 private const val DEFAULT_PAGE_SIZE = 5
@@ -12,6 +13,14 @@ private const val DEFAULT_FIRST_PAGE_SIZE = DEFAULT_PAGE_SIZE
 
 class DefaultPokemonRepository(private val apiService: PokeApiService,
                                private val sourceFactory: PokemonListDataSourceFactory) : PokemonRepository {
+
+    override suspend fun getSpecieByName(name: String): Result<Specie> =
+        try {
+            Result.Success(apiService.getSpecieByName(name))
+        } catch (e: Throwable) {
+            Result.Error(e)
+        }
+
     override suspend fun getPokemonByName(name: String): Result<Pokemon> =
         try {
             Result.Success(apiService.getPokemonByName(name))

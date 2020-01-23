@@ -19,7 +19,7 @@ class MainViewModel(repository: PokemonRepository) : ViewModel() {
         get() = Transformations.map(pagingList.refreshState){ it.status == Status.SUCCESS }
 
     val error : LiveData<Boolean>
-        get() = Transformations.map(pagingList.networkState){ it.status == Status.FAILED }
+        get() = Transformations.map(pagingList.networkState){ it.status == Status.FAILED  }
 
     fun refresh() {
         pagingList.refresh()

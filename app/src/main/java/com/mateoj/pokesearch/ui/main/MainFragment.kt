@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mateoj.pokesearch.R
-import com.mateoj.pokesearch.ui.results.PokemonListAdapter
+import com.mateoj.pokesearch.ui.detail.PokemonDetailFragmentDirections
 import kotlinx.android.synthetic.main.main_fragment.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -66,6 +67,12 @@ class MainFragment : Fragment() {
         mainViewModel.error.observe(viewLifecycleOwner, Observer { hasError ->
             if(hasError) showError() else showContent()
         })
+
+        adapter.onItemClickListener = {_, _, pokemon ->
+            pokemon?.let {
+                findNavController().navigate(PokemonDetailFragmentDirections.actionPokemonDetails(it.name))
+            }
+        }
     }
 
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_load_error">Encontramos un error inesperado</string>
+    <string name="app_load_retry">Tratar Denuevo</string>
+    <string name="pokemon_id">#%1$s</string>
+    <string name="pokemon_weight"><b>Peso:</b> %1$.2f kg</string>
+    <string name="pokemon_height"><b>Alture:</b> %1$.2f m</string>
+    <string name="detail_stats_title">Estadísticas</string>
+</resources>

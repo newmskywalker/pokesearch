@@ -1,4 +1,4 @@
-package com.mateoj.pokesearch.ui.results
+package com.mateoj.pokesearch.ui.main
 
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +12,19 @@ import com.mateoj.pokesearch.api.Pokemon
 import com.mateoj.pokesearch.extensions.inflateChild
 import com.mateoj.pokesearch.extensions.load
 
-class PokemonListAdapter : PagedListAdapter<Pokemon, PokemonListAdapter.PokemonViewHolder>(DIFF_CALLBACK) {
+typealias OnPokemonClickListener = (View, Int, Pokemon?) -> Unit
+
+class PokemonListAdapter : PagedListAdapter<Pokemon, PokemonListAdapter.PokemonViewHolder>(
+    DIFF_CALLBACK
+) {
+    var onItemClickListener: OnPokemonClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder =
-        PokemonViewHolder(parent.inflateChild(R.layout.item_pokemon_list))
+        PokemonViewHolder(parent.inflateChild(R.layout.item_pokemon_list)).apply {
+            this.itemView.setOnClickListener {
+                onItemClickListener?.invoke(it, this.adapterPosition, getItem(this.adapterPosition))
+            }
+        }
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         holder.bind(getItem(position))
@@ -23,12 +33,14 @@ class PokemonListAdapter : PagedListAdapter<Pokemon, PokemonListAdapter.PokemonV
     inner class PokemonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameTextView = view.findViewById<TextView>(R.id.item_pokemon_name)
         private val imageView = view.findViewById<ImageView>(R.id.item_pokemon_image)
+        private val pokemonIdView = view.findViewById<TextView>(R.id.item_pokemon_id)
+        private val context = view.context
 
         fun bind(pokemon: Pokemon?) {
             pokemon?.let {
                 nameTextView.text = it.name.capitalize()
-                val image = it.sprites.frontShiny ?: it.sprites.frontDefault
-                image?.let { imageView.load(it) }
+                pokemonIdView.text = context.getString(R.string.pokemon_id, "${it.id}".padStart(3, '0'))
+                imageView.load(it.sprites.frontDefault)
             } ?: run {
                 //This is a placeholder, clear
                 clear()
@@ -39,6 +51,7 @@ class PokemonListAdapter : PagedListAdapter<Pokemon, PokemonListAdapter.PokemonV
         private fun clear(){
             nameTextView.text = null
             imageView.setImageDrawable(null)
+            pokemonIdView.text = null
         }
     }
 
