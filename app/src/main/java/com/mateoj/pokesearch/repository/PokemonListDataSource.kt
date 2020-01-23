@@ -5,28 +5,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.mateoj.pokesearch.api.PokeApiService
 import com.mateoj.pokesearch.api.Pokemon
+import com.mateoj.pokesearch.api.PokemonResult
 import com.mateoj.pokesearch.api.PokemonResultList
 import kotlinx.coroutines.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class PokemonListDataSource(
-    private val coroutineScope: CoroutineScope,
     private val apiService: PokeApiService,
     private val retryExecutor : Executor = Executors.newSingleThreadExecutor()
 ) : PageKeyedDataSource<String, Pokemon>() {
 
     private var retry: (() -> Any)? = null
 
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     val networkState = MutableLiveData<NetworkState>()
 
     val initialLoad = MutableLiveData<NetworkState>()
-
-    private fun pokemonList(result: PokemonResultList) : List<Pokemon> = runBlocking {
-        result.results.map {
-            async { apiService.getPokemonByName(it.name) }
-        }.awaitAll()
-    }
 
     private fun postLoading() {
         networkState.postValue(NetworkState.LOADING)
@@ -46,14 +42,15 @@ class PokemonListDataSource(
     ) {
         initialLoad.postValue(NetworkState.LOADING)
         postLoading()
-        coroutineScope.launch(Dispatchers.IO) {
+        scope.launch {
             try {
                 val result = apiService.getPokemonList(limit = params.requestedLoadSize)
-                callback.onResult(pokemonList(result), 0, result.count, null, result.next)
+                val list = result.results.map { async { apiService.getPokemonByName(it.name) } }
+                callback.onResult(list.awaitAll(), 0, result.count, null, result.next)
                 postLoaded()
                 initialLoad.postValue(NetworkState.LOADED)
             } catch (e: Throwable) {
-                callback.onError(e)
+                retry = { loadInitial(params, callback) }
                 postError(e.message)
                 initialLoad.postValue(NetworkState.error(e.message))
             }
@@ -62,18 +59,20 @@ class PokemonListDataSource(
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Pokemon>) {
         postLoading()
-        coroutineScope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.IO) {
             try {
                 with(Uri.parse(params.key)) {
                     val offset = getQueryParameter("offset")
                     val limit = getQueryParameter("limit")
                     val result = apiService.getPokemonList(limit = limit?.toInt(), offset = offset?.toInt())
-                    callback.onResult(pokemonList(result),  result.next)
+                    val list = result.results.map { async { apiService.getPokemonByName(it.name) } }
+
+                    callback.onResult(list.awaitAll(),  result.next)
                     postLoaded()
                 }
 
             } catch (e: Throwable) {
-                callback.onError(e)
+                retry = { loadAfter(params, callback) }
                 postError(e.message)
             }
         }
@@ -92,5 +91,9 @@ class PokemonListDataSource(
                 it.invoke()
             }
         }
+    }
+
+    fun cancelCoroutines() {
+        scope.cancel()
     }
 }

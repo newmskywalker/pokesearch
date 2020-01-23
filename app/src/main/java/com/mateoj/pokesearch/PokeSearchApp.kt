@@ -9,8 +9,6 @@ import com.mateoj.pokesearch.ui.main.MainViewModel
 import com.mateoj.pokesearch.ui.results.PokemonListAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.CoroutineScope
-import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -24,6 +22,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class PokeSearchApp : Application() {
     private val appModule = module {
         single {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BASIC
             Retrofit.Builder()
                 .baseUrl("https://pokeapi.co/api/")
                 .addConverterFactory(MoshiConverterFactory.create(
@@ -32,21 +32,14 @@ class PokeSearchApp : Application() {
                         .build())
                 )
                 .client(OkHttpClient.Builder()
-                    .addInterceptor(HttpLoggingInterceptor()
-                        .setLevel(HttpLoggingInterceptor.Level.BASIC))
+                    .addInterceptor(interceptor)
                     .build())
                 .build()
                 .create(PokeApiService::class.java)
         }
-
-        factory { (scope: CoroutineScope) -> PokemonListDataSourceFactory(scope, get()) }
-
-        single {
-            (scope: CoroutineScope) -> DefaultPokemonRepository(scope) as PokemonRepository
-        }
-        viewModel {
-            MainViewModel()
-        }
+        factory { PokemonListDataSourceFactory(get()) }
+        single { DefaultPokemonRepository(get(), get()) as PokemonRepository }
+        viewModel { MainViewModel(get()) }
         factory { PokemonListAdapter() }
     }
     override fun onCreate() {

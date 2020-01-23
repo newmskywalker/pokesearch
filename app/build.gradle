@@ -28,7 +28,8 @@ def versions = [
         koin : '2.0.1',
         paging: '2.1.1',
         retrofit: '2.6.1',
-        glide: '4.11.0'
+        glide: '4.11.0',
+        lifecycle: '2.2.0'
 ]
 
 dependencies {
@@ -37,14 +38,16 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
     implementation 'com.google.android.material:material:1.0.0'
     implementation "androidx.paging:paging-runtime-ktx:$versions.paging"
-    implementation "com.squareup.okhttp3:logging-interceptor:3.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.2.0"
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
     implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
+    implementation 'de.hdodenhof:circleimageview:3.0.2'
     implementation "org.koin:koin-core:$versions.koin"
     implementation "org.koin:koin-core-ext:$versions.koin"
     implementation "org.koin:koin-android:$versions.koin"

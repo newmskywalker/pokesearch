@@ -26,8 +26,8 @@ class PokemonListAdapter : PagedListAdapter<Pokemon, PokemonListAdapter.PokemonV
 
         fun bind(pokemon: Pokemon?) {
             pokemon?.let {
-                nameTextView.text = it.name
-                val image = it.sprites.frontDefault
+                nameTextView.text = it.name.capitalize()
+                val image = it.sprites.frontShiny ?: it.sprites.frontDefault
                 image?.let { imageView.load(it) }
             } ?: run {
                 //This is a placeholder, clear

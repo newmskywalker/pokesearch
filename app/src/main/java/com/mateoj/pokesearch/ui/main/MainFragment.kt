@@ -1,7 +1,6 @@
 package com.mateoj.pokesearch.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mateoj.pokesearch.R
 import com.mateoj.pokesearch.ui.results.PokemonListAdapter
 import kotlinx.android.synthetic.main.main_fragment.*
-import kotlinx.android.synthetic.main.main_fragment.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,33 +33,38 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.main_recycler_view.adapter = adapter
-        view.main_recycler_view.layoutManager = LinearLayoutManager(context)
-    }
-
-    private fun showLoading() {
-        main_recycler_view.isGone = true
-        main_progressbar.isVisible = true
+        main_recycler_view.adapter = adapter
+        main_recycler_view.layoutManager = LinearLayoutManager(context)
+        refresh_layout.setOnRefreshListener { mainViewModel.refresh() }
+        try_again.setOnClickListener { mainViewModel.retry() }
     }
 
     private fun showContent() {
         main_recycler_view.isVisible = true
-        main_progressbar.isGone = true
+        error_layout.isGone = true
+    }
+
+    private fun showError() {
+        main_recycler_view.isGone = true
+        error_layout.isVisible = true
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mainViewModel.initialLoading.observe(viewLifecycleOwner, Observer {loading ->
-            if(loading)showLoading()
-        })
-
         mainViewModel.initialLoaded.observe(viewLifecycleOwner, Observer { loaded ->
             if(loaded) showContent()
         })
 
         mainViewModel.pokemonList.observe(viewLifecycleOwner, Observer {
-            Log.d("POKEMON", it.toString())
             adapter.submitList(it)
+        })
+
+        mainViewModel.initialLoading.observe(viewLifecycleOwner, Observer {
+            refresh_layout.isRefreshing = it
+        })
+
+        mainViewModel.error.observe(viewLifecycleOwner, Observer { hasError ->
+            if(hasError) showError() else showContent()
         })
     }
 
