@@ -18,7 +18,7 @@ data class Pokemon (
     @Json(name = "held_items")
     val heldItems: List<Any?>,
 
-    val id: Long,
+    val id: Int,
 
     @Json(name = "is_default")
     val isDefault: Boolean,
