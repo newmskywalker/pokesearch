@@ -6,6 +6,7 @@ import android.view.Menu
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.main_activity.*
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -16,7 +17,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(toolbar)
+        toolbar.setupWithNavController(findNavController(R.id.nav_host_fragment))
         setupSearch()
     }
 

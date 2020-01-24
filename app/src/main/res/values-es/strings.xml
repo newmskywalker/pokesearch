@@ -4,6 +4,7 @@
     <string name="app_load_retry">Tratar Denuevo</string>
     <string name="pokemon_id">#%1$s</string>
     <string name="pokemon_weight"><b>Peso:</b> %1$.2f kg</string>
-    <string name="pokemon_height"><b>Alture:</b> %1$.2f m</string>
+    <string name="pokemon_height"><b>Altura:</b> %1$.2f m</string>
     <string name="detail_stats_title">Estadísticas</string>
+    <string name="pokemon_details_title">Detalles del Pokemón</string>
 </resources>
