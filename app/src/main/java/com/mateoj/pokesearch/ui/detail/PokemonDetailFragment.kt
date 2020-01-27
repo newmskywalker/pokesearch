@@ -73,6 +73,10 @@ class PokemonDetailFragment : Fragment() {
         } ?: run {
             pokemon_detail_chip_2.isGone = true
         }
+
+        my_bar_chart.data = pokemon.stats.map {
+            Entry(it.baseStat.toFloat(), it.stat.name)
+        }
     }
 
     private fun showPokemonSpecieDetails(specie: Specie) {

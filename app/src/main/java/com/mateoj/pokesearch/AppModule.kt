@@ -42,7 +42,7 @@ object AppModule {
                 .create(PokeApiService::class.java)
         }
         factory { PokemonListDataSourceFactory(get(), get()) }
-        single { DefaultPokemonRepository(get(), get(), get()) as PokemonRepository }
+        single { DefaultPokemonRepository(get(), get()) as PokemonRepository }
         viewModel { MainViewModel(get()) }
         viewModel { MainActivityViewModel(get()) }
         viewModel { PokemonDetailViewModel(get()) }

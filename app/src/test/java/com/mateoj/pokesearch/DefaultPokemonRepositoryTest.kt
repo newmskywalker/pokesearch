@@ -14,6 +14,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.koin.test.KoinTest
 import java.lang.Exception
+import java.net.SocketTimeoutException
 
 @ExperimentalCoroutinesApi
 class DefaultPokemonRepositoryTest : KoinTest {

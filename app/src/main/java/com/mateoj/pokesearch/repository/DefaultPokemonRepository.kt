@@ -14,7 +14,6 @@ private const val DEFAULT_PAGE_SIZE = 10
 private const val DEFAULT_FIRST_PAGE_SIZE = DEFAULT_PAGE_SIZE
 
 class DefaultPokemonRepository(private val apiService: PokeApiService,
-                               private val db : PokemonSearchSuggestionsDB,
                                private val sourceFactory: PokemonListDataSourceFactory) : PokemonRepository {
 
     override suspend fun getSpecieByName(name: String): Result<Specie> =

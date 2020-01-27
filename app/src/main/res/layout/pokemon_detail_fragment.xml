@@ -116,7 +116,17 @@
                         tools:text="Weight: 8.5 kg"
                         android:layout_marginStart="8dp"
                         />
+                    <com.mateoj.pokesearch.ui.detail.MyBarChart
+                        android:id="@+id/my_bar_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintTop_toBottomOf="@id/pokemon_detail_height"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    />
                     <com.github.mikephil.charting.charts.BarChart
+                        android:visibility="gone"
                         android:id="@+id/pokemon_stats_chart"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -160,4 +170,5 @@
         android:text="@string/app_load_error"
         android:textAppearance="?android:attr/textAppearanceMediumInverse"
         />
+
 </FrameLayout>
