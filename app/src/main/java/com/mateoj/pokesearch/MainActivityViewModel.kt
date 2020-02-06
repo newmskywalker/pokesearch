@@ -2,7 +2,9 @@ package com.mateoj.pokesearch
 
 import androidx.lifecycle.*
 import com.mateoj.pokesearch.db.PokemonSearchSuggestionsDB
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivityViewModel(private val searchSuggestionsDb: PokemonSearchSuggestionsDB) : ViewModel() {
     private val _term = MutableLiveData<String>()
@@ -19,8 +21,10 @@ class MainActivityViewModel(private val searchSuggestionsDb: PokemonSearchSugges
         }
 
         viewModelScope.launch {
-            val suggestions = searchSuggestionsDb.pokemonDao().getSuggestions("$term%").map { it.name }.toTypedArray()
-            _suggestions.value = suggestions
+            withContext(Dispatchers.IO) {
+                val suggestions = searchSuggestionsDb.pokemonDao().getSuggestions("$term%").map { it.name }.toTypedArray()
+                _suggestions.postValue(suggestions)
+            }
         }
     }
 }

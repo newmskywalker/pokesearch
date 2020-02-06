@@ -12,7 +12,7 @@ import kotlin.math.max
 class MyBarChart @JvmOverloads constructor(context: Context, attributeSet: AttributeSet?, defStyle: Int = 0) : View(context, attributeSet, defStyle) {
     private val paint : HashMap<Int, Paint> = hashMapOf()
     private var animStarted: Boolean = false
-    private val oddAnimator : ValueAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
+    private val oddAnimator : ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         interpolator = LinearOutSlowInInterpolator()
         duration = 1500
         startDelay = 500
@@ -22,7 +22,7 @@ class MyBarChart @JvmOverloads constructor(context: Context, attributeSet: Attri
         }
     }
 
-    private val evenAnimator : ValueAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
+    private val evenAnimator : ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         interpolator = LinearOutSlowInInterpolator()
         duration = 2000
         startDelay = 500
@@ -74,9 +74,9 @@ class MyBarChart @JvmOverloads constructor(context: Context, attributeSet: Attri
                 val normalized = (entry.y - min)/(max - min)
 
                 val left = index * (itemWidth + if(index > 0 ) margin else 0)
-                val top = height - (normalized  * height)
+                val top = 0f
                 val right = left + itemWidth
-                val bottom = height.toFloat()
+                val bottom = height * normalized
                 rectangles.add(Pair(RectF(left, top, right, bottom), Path().apply {
                     moveTo((left + right) / 2f, bottom)
                     lineTo((left + right) / 2f, top)
@@ -92,11 +92,12 @@ class MyBarChart @JvmOverloads constructor(context: Context, attributeSet: Attri
         canvas?.let { c ->
             rectangles.forEachIndexed { index, pair ->
                 val animator = if(index %2 == 0) evenAnimator else oddAnimator
-                c.drawRoundRect(pair.first.left, pair.first.top + (pair.first.bottom * (animator.animatedValue as Float)), pair.first.right, pair.first.bottom, 10f, 10f, paint[index]!!)
+                c.drawRoundRect(pair.first.left, pair.first.top, pair.first.right, pair.first.bottom * (animator.animatedValue as Float), 10f, 10f, paint[index]!!)
 
                 data?.get(index)?.let {
-                    c.drawTextOnPath(it.label, pair.second, textHorizontalMargin,0f, textPaint)
-                    c.drawText(it.y.toString(), pair.first.left + textHorizontalMargin, pair.first.top + textTopMargin, textPaint)
+                    c.drawText(it.label, pair.first.left + textHorizontalMargin, pair.first.top + textTopMargin, textPaint)
+//                    c.drawTextOnPath(it.label, pair.second, textHorizontalMargin,0f, textPaint)
+                    c.drawText(it.y.toString(), pair.first.left + textHorizontalMargin, pair.first.bottom - textTopMargin, textPaint)
                 }
             }
         }
