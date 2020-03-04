@@ -1,4 +1,5 @@
 # PokeSearch
+[![Build Status](https://travis-ci.com/j-mateo/pokesearch.svg?branch=master)](https://travis-ci.com/j-mateo/pokesearch)
 ### Searching Pokemons
 Pokemons can be searched by name or id by typing in the search bar and tapping the enter key
 
